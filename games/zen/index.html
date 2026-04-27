@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Zen — Ryan Novak</title>
+  <meta name="description" content="A gentle physics toy.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <canvas id="world" aria-label="Zen physics toy"></canvas>
+
+  <!-- HUD -->
+  <header class="hud-top">
+    <a href="/bored/" class="back">← Back</a>
+    <span class="title">ZEN</span>
+    <button class="reset" id="reset" aria-label="Reset">Reset</button>
+  </header>
+
+  <aside class="hud-bottom">
+    <span class="hint">
+      <span class="kbd">Click</span> &amp; <span class="kbd">hold</span> to spill &middot;
+      <span class="kbd">Drag</span> a ball to fling &middot;
+      <span class="kbd">R</span> to reset
+    </span>
+  </aside>
+
+  <!-- Tilt request for iOS -->
+  <button id="tilt-enable" class="tilt-btn" hidden>Enable tilt</button>
+
+  <script src="game.js" defer></script>
+</body>
+</html>

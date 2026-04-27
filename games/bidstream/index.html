@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Bidstream — Ryan Novak</title>
+  <meta name="description" content="An RTB bidding game. 60 seconds. Beat your best ROAS.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Nav / chrome -->
+  <header class="topbar">
+    <a href="/bored/" class="back">← Back</a>
+    <span class="title">BIDSTREAM <span class="sub">// RTB_SIM</span></span>
+    <span class="best">BEST ROAS: <strong id="best-roas">—</strong></span>
+  </header>
+
+  <!-- HUD -->
+  <section class="hud" aria-live="polite">
+    <div class="stat">
+      <span class="stat-label">BUDGET</span>
+      <span class="stat-value"><span id="budget">500</span><span class="unit">$</span></span>
+      <div class="meter"><div class="meter-fill" id="budget-bar" style="width: 100%"></div></div>
+    </div>
+    <div class="stat">
+      <span class="stat-label">REVENUE</span>
+      <span class="stat-value"><span id="revenue">0</span><span class="unit">$</span></span>
+      <div class="meter"><div class="meter-fill meter-rev" id="rev-bar" style="width: 0%"></div></div>
+    </div>
+    <div class="stat">
+      <span class="stat-label">ROAS</span>
+      <span class="stat-value" id="roas">0.00</span>
+      <span class="stat-sub">RETURN / SPEND</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">TIME</span>
+      <span class="stat-value" id="time">60<span class="unit">s</span></span>
+      <div class="meter"><div class="meter-fill meter-time" id="time-bar" style="width: 100%"></div></div>
+    </div>
+  </section>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-inner overlay-wide">
+      <p class="eyebrow">GAME 02 // BIDSTREAM</p>
+      <h1>You&rsquo;re a DSP buyer.</h1>
+      <p class="lede">Bid requests land every couple of seconds. You have milliseconds to decide: bid high for the win, bid low to save budget, or pass if it smells like fraud. 60 seconds, $500 budget. Maximize ROAS.</p>
+
+      <div class="example">
+        <p class="example-label">Here&rsquo;s what a bid request looks like:</p>
+
+        <div class="example-card">
+          <div class="ex-row">
+            <span>REQUEST <span class="ex-accent">#0042</span></span>
+            <span>OPENRTB 2.6</span>
+          </div>
+          <div class="ex-head">
+            <span class="ex-domain">espn.com</span>
+            <span class="ex-unit">300x250</span>
+          </div>
+          <div class="ex-metrics">
+            <div class="ex-metric">
+              <span class="ex-lbl">VIEWABILITY</span>
+              <span class="ex-val ex-good">82%</span>
+              <span class="ex-note">how often the ad is seen</span>
+            </div>
+            <div class="ex-metric">
+              <span class="ex-lbl">AUDIENCE MATCH</span>
+              <span class="ex-val ex-good">71%</span>
+              <span class="ex-note">how well it fits your target</span>
+            </div>
+            <div class="ex-metric">
+              <span class="ex-lbl">BASE CPM</span>
+              <span class="ex-val">$3.80</span>
+              <span class="ex-note">what the bid will cost</span>
+            </div>
+          </div>
+          <div class="ex-footer">
+            <span>FLOOR: <strong>$2.50</strong> <span class="ex-note-inline">(minimum bid)</span></span>
+            <span class="ex-flag ex-flag-good">BRAND SAFE</span>
+          </div>
+        </div>
+
+        <p class="example-tip">Green = good. Amber = mixed. <span class="ex-bad-text">Red flags &amp; shady domains mean fraud &mdash; pass on those for a bonus.</span></p>
+      </div>
+
+      <div class="keys">
+        <div class="key-group"><span class="kbd">1</span> BID HIGH</div>
+        <div class="key-group"><span class="kbd">2</span> BID LOW</div>
+        <div class="key-group"><span class="kbd">3</span> PASS</div>
+      </div>
+
+      <div class="overlay-cta">
+        <a href="/bored/" class="ghost">← Back</a>
+        <button class="primary" id="start-btn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End overlay -->
+  <div class="overlay" id="end-overlay" hidden>
+    <div class="overlay-inner">
+      <p class="eyebrow" id="end-verdict">CAMPAIGN COMPLETE</p>
+      <h1>Final ROAS: <span class="accent" id="end-roas">0.00</span></h1>
+      <div class="end-stats">
+        <div><span>SPENT</span><strong id="end-spent">$0</strong></div>
+        <div><span>EARNED</span><strong id="end-earned">$0</strong></div>
+        <div><span>BIDS WON</span><strong id="end-wins">0</strong></div>
+        <div><span>FRAUD BLOCKED</span><strong id="end-fraud">0</strong></div>
+      </div>
+      <p id="end-note" class="note"></p>
+      <div class="overlay-cta">
+        <a href="/bored/" class="ghost">← Back</a>
+        <button class="primary" id="restart-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bid request card -->
+  <main class="stage" id="stage">
+    <div class="no-card" id="no-card">Awaiting bid requests…</div>
+  </main>
+
+  <!-- Action buttons -->
+  <footer class="actions">
+    <button class="action action-high" id="act-high" disabled>
+      <span class="num">1</span>
+      <span class="label">BID HIGH</span>
+      <span class="hint">+30% cost · 80% win</span>
+    </button>
+    <button class="action action-low" id="act-low" disabled>
+      <span class="num">2</span>
+      <span class="label">BID LOW</span>
+      <span class="hint">−10% cost · 35% win</span>
+    </button>
+    <button class="action action-pass" id="act-pass" disabled>
+      <span class="num">3</span>
+      <span class="label">PASS</span>
+      <span class="hint">free</span>
+    </button>
+  </footer>
+
+  <!-- Floating toasts -->
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="game.js" defer></script>
+</body>
+</html>
