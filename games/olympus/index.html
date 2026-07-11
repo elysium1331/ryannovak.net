@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Olympus — Ryan Novak</title>
+  <meta name="description" content="A placement puzzle. One thunderbolt per row, column, and realm — and no two may touch.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/arcade/arena.css">
+</head>
+<body>
+
+  <!-- Nav / chrome -->
+  <header class="topbar">
+    <a href="/arcade/" class="back">← Back</a>
+    <span class="title">OLYMPUS <span class="sub">// ONE_BOLT_PER_REALM</span></span>
+    <span data-arena-chip></span>
+  </header>
+
+  <!-- HUD -->
+  <section class="hud">
+    <div class="hud-left">
+      <div class="stat">
+        <span class="stat-label">TIME</span>
+        <span class="stat-value" id="timer">0:00</span>
+        <span class="stat-sub">BEST <span id="best-sub">—</span></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">BOLTS</span>
+        <span class="stat-value"><span id="bolt-count">0</span><span class="unit">/<span id="bolt-total">8</span></span></span>
+      </div>
+    </div>
+    <div class="hud-right">
+      <button class="hud-btn" id="undo-btn" aria-label="Undo last move">UNDO</button>
+      <button class="hud-btn" id="clear-btn" aria-label="Clear the board">CLEAR</button>
+      <button class="hud-btn" id="new-btn" aria-label="New puzzle"><span class="long">NEW PUZZLE</span><span class="short">NEW</span></button>
+    </div>
+  </section>
+
+  <!-- Board -->
+  <main class="stage">
+    <div class="board" id="board" role="grid" aria-label="Olympus puzzle board"></div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </main>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-inner">
+      <p class="eyebrow">GAME_04 // OLYMPUS</p>
+      <h1>Eight realms. Eight bolts. Zero contact.</h1>
+      <p class="lede">The mountain is carved into colored realms. Plant exactly one thunderbolt in every row, every column, and every realm — and no two bolts may touch, not even at the corners. Tap once for a dot (your own elimination note), again for a bolt, a third time to clear. The clock is the only judge.</p>
+
+      <div class="keys">
+        <div class="key-group"><span class="kbd">TAP</span> / <span class="kbd">SPACE</span> CYCLE</div>
+        <div class="key-group"><span class="kbd">←↑↓→</span> MOVE</div>
+        <div class="key-group"><span class="kbd">Z</span> UNDO</div>
+        <div class="key-group"><span class="kbd">C</span> CLEAR</div>
+        <div class="key-group"><span class="kbd">N</span> NEW PUZZLE</div>
+      </div>
+
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="start-btn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End overlay -->
+  <div class="overlay" id="end-overlay" hidden>
+    <div class="overlay-inner">
+      <p class="eyebrow" id="end-verdict">THE MOUNTAIN YIELDS</p>
+      <h1>Solved in <span class="accent" id="end-time">0:00</span></h1>
+      <p class="pb-tag" id="pb-tag" hidden>NEW PERSONAL BEST</p>
+      <div id="standings"></div>
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="again-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/arcade/arena.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

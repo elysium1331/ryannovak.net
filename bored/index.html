@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ryan Novak — Bored?</title>
-  <meta name="description" content="Two small games: a zen physics toy, and an RTB bidding game.">
+  <meta name="description" content="Small games: a zen physics toy, an RTB bidding game, and an arcade of quick puzzles with monthly standings.">
 
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="alternate icon" href="/img/favicon.ico">
@@ -123,8 +123,20 @@
     .back-link:hover { color: var(--accent); }
     .back-link::before { content: '←'; }
 
+    .game-card-wide {
+      grid-column: 1 / -1;
+      min-height: 0;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-l);
+    }
+    .game-card-wide .game-desc { margin-bottom: 0; }
+    .game-card-wide .game-body { flex: 1; }
+    .game-card-wide .game-play { white-space: nowrap; }
+
     @media (max-width: 720px) {
       .game-grid { grid-template-columns: 1fr; }
+      .game-card-wide { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -139,6 +151,7 @@
         <li><a href="/#skills">Skills</a></li>
         <li><a href="/#contact">Contact</a></li>
         <li><a href="/bored/">Bored?</a></li>
+        <li><a href="/arcade/">Arcade</a></li>
       </ul>
       <button class="menu-toggle" aria-label="Toggle menu" aria-controls="primary-menu" aria-expanded="false">☰</button>
     </div>
@@ -147,8 +160,8 @@
   <main>
     <section class="bored-hero container">
       <p class="eyebrow">Bored?</p>
-      <h1>Two small <span class="accent">games.</span></h1>
-      <p>One is for relaxing. The other is for pretending you&rsquo;re running a DSP. Pick your poison.</p>
+      <h1>Small <span class="accent">games.</span></h1>
+      <p>One is for relaxing. One is for pretending you&rsquo;re running a DSP. And if you&rsquo;re the competitive type, there&rsquo;s a whole arcade below with monthly standings.</p>
     </section>
 
     <section class="container" style="padding-bottom: var(--space-2xl);">
@@ -170,6 +183,17 @@
             You&rsquo;re a DSP buyer. Bid requests land every couple of seconds. You have milliseconds to decide: bid high, bid low, or pass. Dodge the fraud. Beat your best ROAS.
           </p>
           <span class="game-play">Play Bidstream <span class="arrow">→</span></span>
+        </a>
+
+        <a href="/arcade/" class="game-card game-card-wide" data-tilt>
+          <div class="game-body">
+            <span class="game-tag">MORE GAMES &middot; THE ARCADE</span>
+            <h2 class="game-title">The Arcade</h2>
+            <p class="game-desc">
+              Four more quick puzzles — logic, paths, and memory. Anonymous mythological names, Mount Olympus standings, and a clean slate on the first of every month. The gods are already on the board.
+            </p>
+          </div>
+          <span class="game-play">Enter the Arcade <span class="arrow">→</span></span>
         </a>
 
       </div>

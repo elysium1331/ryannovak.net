@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Eclipse — Ryan Novak</title>
+  <meta name="description" content="A sun-and-moon logic puzzle. Six by six, balanced skies, exactly one solution. Beat the clock.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/arcade/arena.css">
+</head>
+<body>
+
+  <!-- Nav / chrome -->
+  <header class="topbar">
+    <a href="/arcade/" class="back">← Back</a>
+    <span class="title">ECLIPSE <span class="sub">// SUN_v_MOON</span></span>
+    <span data-arena-chip></span>
+  </header>
+
+  <!-- HUD -->
+  <section class="hud">
+    <div class="hud-stats">
+      <div class="hud-stat">
+        <span class="hud-label">TIME</span>
+        <span class="hud-value" id="timer">0:00</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hud-label">BEST</span>
+        <span class="hud-value hud-best" id="best">—</span>
+      </div>
+    </div>
+    <div class="hud-actions">
+      <button class="hud-btn" id="undo-btn" aria-label="Undo last move">UNDO</button>
+      <button class="hud-btn" id="clear-btn" aria-label="Clear all your entries">CLEAR</button>
+      <button class="hud-btn" id="new-btn" aria-label="Generate a new puzzle">NEW PUZZLE</button>
+    </div>
+  </section>
+
+  <!-- Board -->
+  <main class="stage">
+    <div class="board-wrap">
+      <div class="board" id="board" role="group" aria-label="Eclipse puzzle, 6 by 6 grid. Tap a cell to cycle empty, sun, moon."></div>
+      <div class="cons" id="cons" aria-hidden="true"></div>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-inner">
+      <p class="eyebrow">GAME_03 // ECLIPSE</p>
+      <h1>Balance the sky.</h1>
+      <p class="lede">Fill the 6×6 grid with suns and moons. Tap a cell to cycle. Solve it clean and the clock is your score — lower sits higher on Olympus.</p>
+
+      <ul class="rules">
+        <li><span class="rule-mark">3+3</span> Every row and column holds exactly three suns and three moons.</li>
+        <li><span class="rule-mark">≠3</span> Never three of the same symbol in a row, across or down.</li>
+        <li><span class="rule-mark">= ×</span> Cells joined by = match. Cells joined by × differ.</li>
+      </ul>
+
+      <div class="keys">
+        <div class="key-group"><span class="kbd">U</span> UNDO</div>
+        <div class="key-group"><span class="kbd">C</span> CLEAR</div>
+        <div class="key-group"><span class="kbd">N</span> NEW PUZZLE</div>
+      </div>
+
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="start-btn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End overlay -->
+  <div class="overlay" id="end-overlay" hidden>
+    <div class="overlay-inner">
+      <p class="eyebrow" id="end-verdict">SKY BALANCED</p>
+      <h1>Solved in <span class="accent" id="end-time">0:00.0</span></h1>
+      <p class="pb-tag" id="pb-tag" hidden>NEW PERSONAL BEST</p>
+      <div id="standings"></div>
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="restart-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/arcade/arena.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

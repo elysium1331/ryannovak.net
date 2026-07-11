@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ryan Novak — The Arcade</title>
+  <meta name="description" content="More games: four quick puzzles with monthly Mount Olympus standings. Casual, fast, and free of microtransactions.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/arcade/arena.css">
+
+  <style>
+    /* Page-specific (mirrors /bored/) */
+    .arcade-hero {
+      padding-block: var(--space-3xl) var(--space-xl);
+      text-align: left;
+    }
+    .arcade-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 0.95;
+      margin-bottom: var(--space-m);
+    }
+    .arcade-hero h1 .accent { color: var(--accent); }
+    .arcade-hero p {
+      font-size: var(--step-1);
+      color: var(--fg-muted);
+      max-width: 56ch;
+      margin-bottom: 0;
+    }
+
+    .arena-banner {
+      margin-top: var(--space-l);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-s) var(--space-l);
+      padding: var(--space-s) var(--space-m);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--fg-muted);
+    }
+    .arena-banner .arena-chip { font-size: 0.78rem; }
+    .arena-banner .rule { color: var(--fg-dim); }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-l);
+      margin-top: var(--space-l);
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-xl);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.3s var(--ease);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      min-height: 300px;
+    }
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at var(--mx, 50%) var(--my, 50%),
+        var(--accent-glow),
+        transparent 60%
+      );
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
+      pointer-events: none;
+    }
+    .game-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .game-card:hover::before { opacity: 1; }
+
+    .game-tag {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: var(--space-s);
+    }
+    .game-title {
+      font-family: var(--font-display);
+      font-size: var(--step-3);
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: var(--space-s);
+      letter-spacing: -0.02em;
+    }
+    .game-desc {
+      color: var(--fg-muted);
+      font-size: var(--step-0);
+      line-height: 1.55;
+      margin-bottom: var(--space-l);
+      flex: 1;
+      max-width: none;
+    }
+    .game-best {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--fg-dim);
+      margin-bottom: var(--space-s);
+    }
+    .game-best strong { color: var(--accent); font-weight: 600; }
+    .game-play {
+      font-family: var(--font-ui);
+      font-size: var(--step--1);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .game-play .arrow { transition: transform 0.2s var(--ease); }
+    .game-card:hover .game-play .arrow { transform: translateX(4px); }
+
+    .back-link {
+      font-family: var(--font-ui);
+      font-size: var(--step--1);
+      color: var(--fg-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      margin-top: var(--space-xl);
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link::before { content: '←'; }
+
+    @media (max-width: 720px) {
+      .game-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" aria-label="Primary">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">Ryan Novak</a>
+      <ul class="nav-links" id="primary-menu">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/#skills">Skills</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/bored/">Bored?</a></li>
+        <li><a href="/arcade/">Arcade</a></li>
+      </ul>
+      <button class="menu-toggle" aria-label="Toggle menu" aria-controls="primary-menu" aria-expanded="false">☰</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="arcade-hero container">
+      <p class="eyebrow">The Arcade</p>
+      <h1>More <span class="accent">games.</span></h1>
+      <p>Four quick puzzles in the LinkedIn-lunch-break genre. Cookies give you an anonymous mythological name, your best scores post to the Mount Olympus standings, and everything resets on the first of the month. The gods are already on the board — outscore them.</p>
+
+      <div class="arena-banner">
+        <span data-arena-chip></span>
+        <span class="rule">STANDINGS RESET · 1ST OF EVERY MONTH</span>
+      </div>
+    </section>
+
+    <section class="container" style="padding-bottom: var(--space-2xl);">
+      <div class="game-grid">
+
+        <a href="/games/eclipse/" class="game-card" data-tilt>
+          <span class="game-tag">GAME_03 &middot; LOGIC</span>
+          <h2 class="game-title">Eclipse</h2>
+          <p class="game-desc">
+            Helios and Selene split the sky. Fill the grid with suns and moons — balanced rows, no three in a row, and a few stubborn constraints. Fast hands, faster logic.
+          </p>
+          <p class="game-best" data-game-best="eclipse"></p>
+          <span class="game-play">Play Eclipse <span class="arrow">→</span></span>
+        </a>
+
+        <a href="/games/olympus/" class="game-card" data-tilt>
+          <span class="game-tag">GAME_04 &middot; LOGIC</span>
+          <h2 class="game-title">Olympus</h2>
+          <p class="game-desc">
+            One thunderbolt per row, per column, per realm — and no two bolts touching. Zeus makes it look easy. It is not easy.
+          </p>
+          <p class="game-best" data-game-best="olympus"></p>
+          <span class="game-play">Play Olympus <span class="arrow">→</span></span>
+        </a>
+
+        <a href="/games/labyrinth/" class="game-card" data-tilt>
+          <span class="game-tag">GAME_05 &middot; PATH</span>
+          <h2 class="game-title">Labyrinth</h2>
+          <p class="game-desc">
+            Drag Ariadne&rsquo;s thread through the maze — hit every waypoint in order, cover every cell, leave nothing for the Minotaur.
+          </p>
+          <p class="game-best" data-game-best="labyrinth"></p>
+          <span class="game-play">Play Labyrinth <span class="arrow">→</span></span>
+        </a>
+
+        <a href="/games/echo/" class="game-card" data-tilt>
+          <span class="game-tag">GAME_06 &middot; MEMORY</span>
+          <h2 class="game-title">Echo</h2>
+          <p class="game-desc">
+            The nymph who could only repeat. Four tones, a growing sequence, and a memory that will betray you around round nine.
+          </p>
+          <p class="game-best" data-game-best="echo"></p>
+          <span class="game-play">Play Echo <span class="arrow">→</span></span>
+        </a>
+
+      </div>
+
+      <a href="/bored/" class="back-link">Back to Bored?</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>&copy; <span data-year>2025</span> Ryan Novak. All rights reserved.</span>
+      <span>Built with caffeine in Orlando.</span>
+    </div>
+  </footer>
+
+  <script src="/js/main.js" defer></script>
+  <script src="/arcade/arena.js" defer></script>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cursor-following glow on game cards
+      document.querySelectorAll('[data-tilt]').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+          card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+        });
+      });
+
+      // Personal best + rank per card
+      if (window.Arena) {
+        document.querySelectorAll('[data-game-best]').forEach(el => {
+          const id = el.dataset.gameBest;
+          const best = Arena.bestOf(id);
+          if (best == null) {
+            el.textContent = 'UNPLAYED THIS MONTH';
+            return;
+          }
+          const mine = Arena.board(id).find(r => r.you);
+          el.innerHTML = 'YOUR BEST: <strong>' + Arena.formatValue(id, best) +
+            '</strong>' + (mine ? ' · RANK #' + mine.rank : '');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

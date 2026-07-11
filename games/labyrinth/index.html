@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Labyrinth — Ryan Novak</title>
+  <meta name="description" content="A path puzzle. One unbroken thread, seven waypoints, every cell exactly once. Beat your best time.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/arcade/arena.css">
+</head>
+<body>
+
+  <!-- Nav / chrome -->
+  <header class="topbar">
+    <a href="/arcade/" class="back">← Back</a>
+    <span class="title">LABYRINTH <span class="sub">// ARIADNES_THREAD</span></span>
+    <span data-arena-chip></span>
+  </header>
+
+  <!-- HUD -->
+  <section class="hud">
+    <div class="stat">
+      <span class="stat-label">TIME</span>
+      <span class="stat-value" id="time">0:00</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">WAYPOINTS</span>
+      <span class="stat-value" id="wp-count">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">THREAD</span>
+      <span class="stat-value" id="cell-count">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">BEST</span>
+      <span class="stat-value" id="best">—</span>
+    </div>
+  </section>
+
+  <!-- Board -->
+  <main class="stage">
+    <div class="board" id="board" tabindex="0"
+         aria-label="Labyrinth board. Drag from waypoint 1 to draw the thread, or move the head with the arrow keys.">
+      <div class="cells" id="cells"></div>
+      <svg id="thread" class="thread" viewBox="0 0 600 600" preserveAspectRatio="none" aria-hidden="true">
+        <path id="thread-glow" class="thread-glow" d=""></path>
+        <path id="thread-line" class="thread-line" d=""></path>
+        <circle id="thread-head" class="thread-head" r="17" style="display:none"></circle>
+      </svg>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="btn-undo" aria-label="Undo the last step" disabled>UNDO</button>
+      <button class="ctl" id="btn-clear" aria-label="Clear the thread" disabled>CLEAR</button>
+      <button class="ctl" id="btn-new" aria-label="Generate a new puzzle" disabled>NEW PUZZLE</button>
+    </div>
+  </main>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-inner">
+      <p class="eyebrow">GAME_05 // LABYRINTH</p>
+      <h1>Every cell. One thread.</h1>
+      <p class="lede">A 6×6 labyrinth, seven numbered waypoints. Draw one unbroken thread from <strong>1</strong> to <strong>7</strong> — collect the numbers in order and cover every cell exactly once. No lifting, no crossing, no cell left dark. Drag backwards to unwind. The clock is the only judge.</p>
+      <div class="keys">
+        <div class="key-group"><span class="kbd">DRAG</span> DRAW</div>
+        <div class="key-group"><span class="kbd">←↑↓→</span> MOVE HEAD</div>
+        <div class="key-group"><span class="kbd">U</span> UNDO</div>
+        <div class="key-group"><span class="kbd">C</span> CLEAR</div>
+      </div>
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="start-btn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End overlay -->
+  <div class="overlay" id="end-overlay" hidden>
+    <div class="overlay-inner">
+      <p class="eyebrow">LABYRINTH CLEARED</p>
+      <h1>Out in <span class="accent" id="end-time">0:00.0</span></h1>
+      <p class="pb-tag" id="end-pb" hidden>NEW PERSONAL BEST</p>
+      <p id="end-note" class="note"></p>
+      <div id="standings"></div>
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="again-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/arcade/arena.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Echo — Ryan Novak</title>
+  <meta name="description" content="A memory game. The mountain plays a sequence; you echo it back. One false note ends the run.">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/img/favicon.ico">
+  <meta name="theme-color" content="#0a0d12">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/arcade/arena.css">
+</head>
+<body>
+
+  <!-- Nav / chrome -->
+  <header class="topbar">
+    <a href="/arcade/" class="back">← Back</a>
+    <span class="title">ECHO <span class="sub">// THE_NYMPH_REPEATS</span></span>
+    <span data-arena-chip></span>
+  </header>
+
+  <!-- HUD -->
+  <section class="hud">
+    <div class="stat">
+      <span class="stat-label">ROUND</span>
+      <span class="stat-value" id="round">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">PROGRESS</span>
+      <span class="stat-value" id="progress">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">BEST</span>
+      <span class="stat-value" id="best">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">SOUND</span>
+      <button class="sound-btn" id="sound-btn" aria-pressed="true" aria-label="Toggle sound">ON</button>
+    </div>
+  </section>
+
+  <!-- Stage -->
+  <main class="stage">
+    <p class="status" id="status" aria-live="polite">PRESS START</p>
+    <div class="tiles locked" id="tiles" role="group" aria-label="Echo tiles">
+      <button class="tile tile-0" id="tile-0" aria-label="Green tile — key 1"><span class="kbd">1</span></button>
+      <button class="tile tile-1" id="tile-1" aria-label="Blue tile — key 2"><span class="kbd">2</span></button>
+      <button class="tile tile-2" id="tile-2" aria-label="Amber tile — key 3"><span class="kbd">3</span></button>
+      <button class="tile tile-3" id="tile-3" aria-label="Red tile — key 4"><span class="kbd">4</span></button>
+    </div>
+  </main>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-inner">
+      <p class="eyebrow">GAME_06 // ECHO</p>
+      <h1>Repeat after the mountain.</h1>
+      <p class="lede">Hera cut Echo's voice down to repeats — tonight that's the job description. The mountain plays a sequence of tones, one note longer every round. Tap the tiles to echo it back, note for note. One false note and the valley goes quiet. Score is rounds echoed.</p>
+
+      <div class="keys">
+        <div class="key-group"><span class="kbd">1</span> <span class="key-tone key-green">GREEN</span></div>
+        <div class="key-group"><span class="kbd">2</span> <span class="key-tone key-blue">BLUE</span></div>
+        <div class="key-group"><span class="kbd">3</span> <span class="key-tone key-amber">AMBER</span></div>
+        <div class="key-group"><span class="kbd">4</span> <span class="key-tone key-red">RED</span></div>
+      </div>
+
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="start-btn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- End overlay -->
+  <div class="overlay" id="end-overlay" hidden>
+    <div class="overlay-inner">
+      <p class="eyebrow" id="end-verdict">THE MOUNTAIN FELL SILENT</p>
+      <h1>Echoed <span class="accent" id="end-rounds">0</span> <span id="end-rounds-unit">rounds</span>.</h1>
+      <p class="pb" id="pb-tag" hidden>NEW PERSONAL BEST</p>
+      <p class="note" id="end-note"></p>
+      <div id="standings"></div>
+      <div class="overlay-cta">
+        <a href="/arcade/" class="ghost">← Back</a>
+        <button class="primary" id="restart-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/arcade/arena.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

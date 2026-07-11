@@ -1,0 +1,151 @@
+/* =================================================================
+   ARENA — shared styles: identity chip + Mount Olympus standings
+   Self-sufficient: defines the site tokens it needs, identical to
+   the values used by every game stylesheet.
+   ================================================================= */
+
+:root {
+  --arena-bg: #0a0d12;
+  --arena-bg-card: #141922;
+  --arena-bg-elevated: #11151c;
+  --arena-border: #1f2630;
+  --arena-border-strong: #2a3340;
+  --arena-fg: #e6ecf3;
+  --arena-fg-muted: #8b96a5;
+  --arena-fg-dim: #566271;
+  --arena-accent: #00e5a0;
+  --arena-accent-glow: rgba(0, 229, 160, 0.18);
+  --arena-amber: #ffb84d;
+  --arena-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --arena-ui: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   Identity chip (topbar)
+   ------------------------------------------------------------ */
+.arena-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-family: var(--arena-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--arena-fg-dim);
+  white-space: nowrap;
+}
+.arena-chip-name { color: var(--arena-accent); font-weight: 600; }
+.arena-chip-off { color: var(--arena-fg-dim); }
+
+/* ------------------------------------------------------------
+   Standings board
+   ------------------------------------------------------------ */
+.arena-board {
+  width: 100%;
+  max-width: 460px;
+  margin: 1.25rem auto 0;
+  border: 1px solid var(--arena-border);
+  border-radius: 6px;
+  background: var(--arena-bg-elevated);
+  overflow: hidden;
+  text-align: left;
+}
+
+.arena-board-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--arena-border);
+  font-family: var(--arena-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--arena-fg-muted);
+}
+.arena-board-game { color: var(--arena-accent); font-weight: 600; }
+
+.arena-note {
+  padding: 0.8rem 1rem;
+  font-family: var(--arena-ui);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--arena-fg-muted);
+  border-bottom: 1px solid var(--arena-border);
+}
+
+.arena-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+}
+
+.arena-row {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr auto;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.32rem 1rem;
+  font-family: var(--arena-mono);
+  font-size: 0.8rem;
+}
+
+.arena-rank { color: var(--arena-fg-dim); font-size: 0.7rem; }
+
+.arena-name {
+  color: var(--arena-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.arena-row.immortal .arena-name { color: var(--arena-fg-muted); }
+
+.arena-tag {
+  font-style: normal;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--arena-fg-dim);
+  border: 1px solid var(--arena-border);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.arena-tag-you {
+  color: var(--arena-bg);
+  background: var(--arena-accent);
+  border-color: var(--arena-accent);
+  font-weight: 700;
+}
+
+.arena-score { color: var(--arena-fg); font-weight: 600; }
+.arena-row.immortal .arena-score { color: var(--arena-fg-muted); font-weight: 400; }
+
+.arena-row.you {
+  background: var(--arena-accent-glow);
+  border-left: 2px solid var(--arena-accent);
+  padding-left: calc(1rem - 2px);
+}
+.arena-row.you .arena-name,
+.arena-row.you .arena-rank { color: var(--arena-fg); }
+
+.arena-gap {
+  display: block;
+  text-align: center;
+  color: var(--arena-fg-dim);
+  padding: 0.1rem 1rem;
+  font-size: 0.7rem;
+}
+
+.arena-board-foot {
+  padding: 0.6rem 1rem 0.7rem;
+  border-top: 1px solid var(--arena-border);
+  font-family: var(--arena-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--arena-fg-dim);
+}
+
+@media (max-width: 480px) {
+  .arena-chip { display: none; } /* topbar space is tight on phones */
+  .arena-row { font-size: 0.74rem; }
+}
