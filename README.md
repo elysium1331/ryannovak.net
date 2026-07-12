@@ -1,6 +1,6 @@
 # ryannovak.net
 
-Personal site for Ryan Novak. Single-page CV, plus a `/bored/` page with two small games and an `/arcade/` page with six more — quick casual puzzles with monthly "Mount Olympus" standings.
+Personal site for Ryan Novak. Single-page CV, plus a `/bored/` page with two small games and an `/arcade/` page with seven more — quick casual puzzles with monthly "Mount Olympus" standings.
 
 ## Stack
 
@@ -25,7 +25,8 @@ Static HTML, CSS, and vanilla JS. No framework, no build step, no dependencies. 
 │   ├── labyrinth/              # Zip-style draw-the-path puzzle
 │   ├── echo/                   # Simon-style memory game
 │   ├── pantheon/               # Picture sudoku — six divine emblems, 6×6
-│   └── mosaic/                 # Nonogram / picross — restore the temple floor
+│   ├── mosaic/                 # Nonogram / picross — restore the temple floor
+│   └── quiver/                 # Arrows puzzle — loose every arrow off the board
 │       └── (each: index.html, style.css, game.js)
 ├── css/
 │   └── main.css                # Shared styles, design tokens, reset, layout
@@ -57,17 +58,19 @@ Static HTML, CSS, and vanilla JS. No framework, no build step, no dependencies. 
 
 **Bidstream** — 60-second round. Budget $500. Bid requests arrive; press 1 (BID HIGH), 2 (BID LOW), or 3 (PASS). Fraud requests come in with red flags and shady domains — correctly passing them pays a small bonus; bidding on them just loses your money. Best ROAS is saved to `localStorage` per-browser.
 
-**Eclipse** — Tango-style logic. Fill the 6×6 grid with suns and moons: three of each per row and column, no three in a row, and `=` / `×` edge constraints. Every puzzle is generated client-side with a unique solution. Score is solve time.
+**Eclipse** — Tango-style logic. Fill the 6×6 grid with suns and moons: three of each per row and column, no three in a row, and `=` / `×` edge constraints. Every puzzle is generated client-side with a unique solution. No live error-checking — when the grid is full it reports how many cells are off. Three hints per puzzle (each solves a row, +5 s). Score is solve time.
 
-**Olympus** — Queens-style logic. Place one thunderbolt per row, column, and colored realm; no two bolts touch, even diagonally. Unique-solution puzzles, generated fresh each run. Score is solve time.
+**Olympus** — Queens-style logic. Place one thunderbolt per row, column, and colored realm; no two bolts touch, even diagonally. Unique-solution puzzles, generated fresh each run. Three hints per puzzle (each plants one correct bolt, +5 s). Score is solve time.
 
 **Labyrinth** — Zip-style path drawing. Drag Ariadne's thread from waypoint 1 to 7, in order, covering every cell exactly once. Score is solve time.
 
 **Echo** — Simon-style memory. Four toned tiles, a sequence that grows each round, one mistake ends the run. Score is rounds completed.
 
-**Pantheon** — Picture sudoku (Meowdoku-style, but with divine emblems instead of cats). 6×6 grid, six 2×3 houses; place Zeus's bolt, Poseidon's trident, Athena's owl, Apollo's lyre, Ares's helm, and Dionysus's grapes so each appears once per row, column, and house. Unique-solution puzzles. Score is solve time.
+**Pantheon** — Picture sudoku (Meowdoku-style, but with divine emblems instead of cats). 6×6 grid, six 2×3 houses; place Zeus's bolt, Poseidon's trident, Athena's owl, Apollo's lyre, Ares's helm, and Dionysus's grapes so each appears once per row, column, and house. Unique-solution puzzles. Three hints per puzzle (one cell each, +5 s); a SOLVE button reveals everything at the cost of the score. Score is solve time.
 
-**Mosaic** — Nonogram/picross. 8×8 temple floor; edge clues give the run-lengths of tesserae in each row and column. Every generated board is solvable by pure line logic — no guessing. Score is solve time.
+**Mosaic** — Nonogram/picross. 8×8 temple floor; edge clues give the run-lengths of tesserae in each row and column. Every generated board is solvable by pure line logic — no guessing. A SOLVE button reveals the floor at the cost of the score. Score is solve time.
+
+**Quiver** — Arrows puzzle (Tap-Away style). A 7×7 board strewn with arrows; tap one to loose it in the direction it points — it flies off only if no other arrow blocks its path, so blockers must leave first. Boards are generated so a clearing order always exists. Score is time to empty the board.
 
 ## The Arena (anonymous standings)
 

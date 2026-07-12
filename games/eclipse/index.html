@@ -39,6 +39,7 @@
       </div>
     </div>
     <div class="hud-actions">
+      <button class="hud-btn" id="hint-btn" aria-label="Hint: solve one row, costs 5 seconds" disabled>HINT (3)</button>
       <button class="hud-btn" id="undo-btn" aria-label="Undo last move">UNDO</button>
       <button class="hud-btn" id="clear-btn" aria-label="Clear all your entries">CLEAR</button>
       <button class="hud-btn" id="new-btn" aria-label="Generate a new puzzle">NEW PUZZLE</button>
@@ -65,9 +66,11 @@
         <li><span class="rule-mark">3+3</span> Every row and column holds exactly three suns and three moons.</li>
         <li><span class="rule-mark">≠3</span> Never three of the same symbol in a row, across or down.</li>
         <li><span class="rule-mark">= ×</span> Cells joined by = match. Cells joined by × differ.</li>
+        <li><span class="rule-mark">+5s</span> No checking as you go — fill the sky and you&rsquo;ll hear how many cells are off. Three hints per puzzle, each solves a row for five seconds.</li>
       </ul>
 
       <div class="keys">
+        <div class="key-group"><span class="kbd">H</span> HINT</div>
         <div class="key-group"><span class="kbd">U</span> UNDO</div>
         <div class="key-group"><span class="kbd">C</span> CLEAR</div>
         <div class="key-group"><span class="kbd">N</span> NEW PUZZLE</div>

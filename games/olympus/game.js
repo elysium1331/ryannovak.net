@@ -244,6 +244,7 @@
   let tickId = 0;
   let runId = 0;
   let cursor = { r: 0, c: 0 };
+  let hintsLeft = 3;
 
   // ---------- timer ----------
   const fmtClock = secs => {
@@ -388,6 +389,37 @@
     refresh();
   };
 
+  // ---------- hints ----------
+  // Three per puzzle: each plants one correct bolt (clearing that row
+  // of stray marks/bolts first) and costs five seconds on the clock.
+  const hintBtn = $('hint-btn');
+
+  const updateHintBtn = () => {
+    hintBtn.textContent = 'HINT (' + hintsLeft + ')';
+    hintBtn.disabled = !started || finished || hintsLeft === 0;
+  };
+
+  const useHint = () => {
+    if (!started || finished || hintsLeft === 0) return;
+    const rows = [];
+    for (let r = 0; r < puzzle.n; r++)
+      if (state[r][puzzle.solution[r]] !== 2) rows.push(r);
+    if (!rows.length) return;
+    const r = rows[Math.floor(Math.random() * rows.length)];
+    undoStack.push({ type: 'snapshot', grid: state.map(row => row.slice()) });
+    for (let c = 0; c < puzzle.n; c++) state[r][c] = 0;
+    state[r][puzzle.solution[r]] = 2;
+    hintsLeft--;
+    startTs -= 5000; // +5s penalty: elapsed = now - startTs
+    timerEl.textContent = fmtClock(elapsedSecs());
+    updateHintBtn();
+    refresh(); // may complete the puzzle -> finish()
+    if (!finished && !statusEl.textContent) {
+      statusEl.textContent = 'ZEUS PLANTS ROW ' + (r + 1) + ' · +5s';
+      statusEl.className = 'status';
+    }
+  };
+
   // ---------- lifecycle ----------
   const freshPuzzle = () => {
     runId++;
@@ -400,8 +432,10 @@
     state = Array.from({ length: puzzle.n }, () => new Array(puzzle.n).fill(0));
     undoStack = [];
     finished = false;
+    hintsLeft = 3;
     buildBoard();
     refresh();
+    updateHintBtn();
   };
 
   const updateBest = () => {
@@ -413,6 +447,7 @@
   const finish = () => {
     finished = true;
     stopTimer();
+    updateHintBtn();
     const secs = Math.round(elapsedSecs() * 10) / 10;
     boardEl.classList.add('solved');
     statusEl.textContent = 'SOLVED';
@@ -442,6 +477,7 @@
     startOverlay.hidden = true;
     endOverlay.hidden = true;
     startTimer();
+    updateHintBtn();
     if (cells[0] && cells[0][0]) cells[0][0].focus({ preventScroll: true });
   };
 
@@ -481,6 +517,7 @@
       }
       case 'z': case 'Z': case 'u': case 'U': e.preventDefault(); undo(); break;
       case 'c': case 'C': e.preventDefault(); clearBoard(); break;
+      case 'h': case 'H': e.preventDefault(); useHint(); break;
       case 'n': case 'N': e.preventDefault(); newPuzzle(); break;
     }
   });
@@ -503,6 +540,7 @@
   $('again-btn').addEventListener('click', playAgain);
   $('undo-btn').addEventListener('click', undo);
   $('clear-btn').addEventListener('click', clearBoard);
+  $('hint-btn').addEventListener('click', useHint);
   $('new-btn').addEventListener('click', newPuzzle);
 
   // ---------- boot ----------

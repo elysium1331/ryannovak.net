@@ -165,8 +165,8 @@
       return true;
     };
 
-    // Definite violations in a partial grid — for gentle live
-    // highlighting. Empty cells never count against a line.
+    // Definite violations in a partial grid. No longer surfaced in the
+    // UI (live feedback leaked answers) — retained for headless tests.
     const violations = (puzzle, grid) => {
       const rows = [], cols = [], cons = [];
       for (let i = 0; i < SIZE; i++) {
@@ -267,6 +267,7 @@
   const undoBtn = $('undo-btn');
   const clearBtn = $('clear-btn');
   const newBtn = $('new-btn');
+  const hintBtn = $('hint-btn');
 
   // ---- inline SVG symbols (crisper than emoji) -------------------
   const sunSVG = (() => {
@@ -293,12 +294,12 @@
   let puzzle = null;
   let grid = null;
   let cellEls = [];   // [r][c] -> button
-  let conEls = [];    // constraint chip per puzzle.constraints index
   let undoStack = []; // entries: arrays of [r, c, prevValue]
   let started = false;
   let finished = false;
   let startTime = 0;
   let timerId = null;
+  let hintsLeft = 3;
 
   // ---- time formatting --------------------------------------------
   const fmtClock = secs => {
@@ -367,7 +368,6 @@
     boardEl.innerHTML = '';
     consEl.innerHTML = '';
     cellEls = [];
-    conEls = [];
     for (let r = 0; r < SIZE; r++) {
       cellEls.push([]);
       for (let c = 0; c < SIZE; c++) {
@@ -391,21 +391,20 @@
       s.style.left = (x * 100) + '%';
       s.style.top = (y * 100) + '%';
       consEl.appendChild(s);
-      conEls.push(s);
     }
   };
 
   // ---- rendering -----------------------------------------------------
+  // Deliberately NO live rule-checking here: flagging violations as a
+  // cell is cycled hands over the answer two taps at a time. Feedback
+  // arrives only once the grid is full — see checkWin.
   const refresh = () => {
-    const vio = Logic.violations(puzzle, grid);
-    const badRow = new Set(vio.rows), badCol = new Set(vio.cols);
     for (let r = 0; r < SIZE; r++)
       for (let c = 0; c < SIZE; c++) {
         const b = cellEls[r][c];
         const v = grid[r][c];
         b.classList.toggle('sun', v === SUN);
         b.classList.toggle('moon', v === MOON);
-        b.classList.toggle('err', badRow.has(r) || badCol.has(c));
         const want = v === SUN ? sunSVG : v === MOON ? moonSVG : '';
         if (b.dataset.sym !== String(v)) {
           b.innerHTML = want;
@@ -413,19 +412,13 @@
         }
         b.setAttribute('aria-label', cellLabel(r, c));
       }
-    const badCon = new Set(vio.cons);
-    conEls.forEach((el, i) => el.classList.toggle('err', badCon.has(i)));
 
-    const parts = [];
-    for (const r of vio.rows) parts.push('ROW ' + (r + 1));
-    for (const c of vio.cols) parts.push('COL ' + (c + 1));
-    if (vio.cons.length)
-      parts.push(vio.cons.length + (vio.cons.length === 1 ? ' PAIR' : ' PAIRS'));
-    statusEl.textContent = parts.length ? 'CHECK → ' + parts.join(' · ') : '';
-    statusEl.classList.toggle('bad', parts.length > 0);
+    statusEl.textContent = '';
+    statusEl.classList.remove('bad');
 
     undoBtn.disabled = undoStack.length === 0 || finished;
     clearBtn.disabled = finished;
+    updateHintBtn();
   };
 
   // ---- interaction -----------------------------------------------------
@@ -462,12 +455,48 @@
     if (entry.length) { pushUndo(entry); refresh(); }
   };
 
+  // ---- hints -----------------------------------------------------------
+  // Three per puzzle. Each one fills a not-yet-correct row with the
+  // solution and pushes the clock forward five seconds.
+  const updateHintBtn = () => {
+    hintBtn.textContent = 'HINT (' + hintsLeft + ')';
+    hintBtn.disabled = !started || finished || hintsLeft === 0;
+  };
+
+  const useHint = () => {
+    if (!started || finished || hintsLeft === 0) return;
+    const rows = [];
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++)
+        if (grid[r][c] !== puzzle.solution[r][c]) { rows.push(r); break; }
+    }
+    if (!rows.length) return;
+    const r = rows[Math.floor(Math.random() * rows.length)];
+    const entry = [];
+    for (let c = 0; c < SIZE; c++)
+      if (puzzle.givens[r][c] === 0 && grid[r][c] !== puzzle.solution[r][c]) {
+        entry.push([r, c, grid[r][c]]);
+        grid[r][c] = puzzle.solution[r][c];
+      }
+    if (entry.length) pushUndo(entry);
+    hintsLeft--;
+    startTime -= 5000; // +5s penalty: elapsed = now - startTime
+    tick();
+    refresh();
+    checkWin();
+    if (!finished && !statusEl.textContent) {
+      statusEl.textContent = 'HELIOS REVEALS ROW ' + (r + 1) + ' · +5s';
+      statusEl.classList.remove('bad');
+    }
+  };
+
   // ---- runs & winning -----------------------------------------------
   const newRun = () => {
     puzzle = Logic.generate();
     grid = Logic.cloneGrid(puzzle.givens);
     undoStack = [];
     finished = false;
+    hintsLeft = 3;
     buildConLabels();
     buildBoard();
     refresh();
@@ -481,7 +510,13 @@
       for (let c = 0; c < SIZE; c++)
         if (grid[r][c] === 0) return;
     if (!Logic.validate(puzzle, grid)) {
-      statusEl.textContent = statusEl.textContent || 'FULL, BUT THE SKY IS OFF — RECHECK';
+      // The puzzle has exactly one solution, so "wrong" is well-defined.
+      let wrong = 0;
+      for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+          if (grid[r][c] !== puzzle.solution[r][c]) wrong++;
+      statusEl.textContent = 'SKY FULL — ' + wrong +
+        (wrong === 1 ? ' CELL IS OFF' : ' CELLS ARE OFF');
       statusEl.classList.add('bad');
       return;
     }
@@ -511,6 +546,7 @@
     document.body.classList.remove('prestart');
     started = true;
     startTimer();
+    updateHintBtn();
   };
 
   // ---- keyboard -------------------------------------------------------
@@ -534,6 +570,7 @@
       case 'ArrowRight': e.preventDefault(); moveFocus(0, 1); break;
       case 'u': case 'U': undo(); break;
       case 'c': case 'C': clearBoard(); break;
+      case 'h': case 'H': useHint(); break;
       case 'n': case 'N': if (!$('end-overlay').hidden) break; newRun(); break;
     }
   });
@@ -543,6 +580,7 @@
   $('restart-btn').addEventListener('click', newRun);
   undoBtn.addEventListener('click', undo);
   clearBtn.addEventListener('click', clearBoard);
+  hintBtn.addEventListener('click', useHint);
   newBtn.addEventListener('click', () => { if (started && !finished) newRun(); });
 
   // Veil the generated board until START so nobody pre-studies the

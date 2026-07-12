@@ -218,6 +218,7 @@
   const undoBtn = $('undo-btn');
   const clearBtn = $('clear-btn');
   const newBtn = $('new-btn');
+  const solveBtn = $('solve-btn');
   const tileBtn = $('tool-tile');
   const markBtn = $('tool-mark');
 
@@ -233,6 +234,7 @@
   let rowClueEls = [];
   let colClueEls = [];
   let undoStack = [];     // entries: arrays of [idx, prevValue]
+  let surrendered = false; // SOLVE pressed: reveal the floor, no score
   let stroke = null;      // { eff, action, changes, visited }
   let tool = 'tile';
   let started = false;
@@ -358,6 +360,7 @@
       : '';
     undoBtn.disabled = !started || finished || undoStack.length === 0;
     clearBtn.disabled = !started || finished;
+    solveBtn.disabled = !started || finished;
   };
 
   const refreshAll = () => {
@@ -501,6 +504,7 @@
     undoStack = [];
     stroke = null;
     finished = false;
+    surrendered = false;
     buildBoard();
     buildClues();
     refreshAll();
@@ -521,9 +525,10 @@
 
     $('end-time').textContent = fmtPrecise(secs);
     let res = null;
-    if (window.Arena) res = Arena.submitScore(GAME_ID, secs); // once per run
-    $('end-verdict').textContent =
-      res && res.rank === 1 ? 'YOU SIT ATOP OLYMPUS' : 'MOSAIC RESTORED';
+    if (!surrendered && window.Arena) res = Arena.submitScore(GAME_ID, secs); // once per run
+    $('end-verdict').textContent = surrendered
+      ? 'THE GODS RESTORE IT — NO SCORE'
+      : (res && res.rank === 1 ? 'YOU SIT ATOP OLYMPUS' : 'MOSAIC RESTORED');
     $('pb-tag').hidden = !(res && res.improved);
     if (window.Arena) Arena.renderBoard($('standings'), GAME_ID);
     refreshBest();
@@ -540,6 +545,17 @@
     started = true;
     startTimer();
     refreshClues();
+  };
+
+  // SOLVE: lay every tessera where it belongs and end the run — the
+  // floor gets restored, but the score belongs to the gods.
+  const surrender = () => {
+    if (!started || finished) return;
+    surrendered = true;
+    endStroke();
+    for (let i = 0; i < CELLS; i++) state[i] = solFlat[i] ? TILE : EMPTY;
+    refreshAll();
+    win();
   };
 
   // ---- keyboard -------------------------------------------------------
@@ -576,6 +592,7 @@
   undoBtn.addEventListener('click', undo);
   clearBtn.addEventListener('click', clearBoard);
   newBtn.addEventListener('click', () => { if (started && !finished) newRun(); });
+  solveBtn.addEventListener('click', surrender); // button only — no hotkey, too costly to fat-finger
   tileBtn.addEventListener('click', () => setTool('tile'));
   markBtn.addEventListener('click', () => setTool('mark'));
 

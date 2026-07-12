@@ -270,6 +270,8 @@
   let finished = false;
   let startTime = 0;
   let timerId = null;
+  let hintsLeft = 3;
+  let surrendered = false; // SOLVE pressed: reveal everything, no score
 
   // ---- time formatting --------------------------------------------
   const fmtClock = secs => {
@@ -400,6 +402,7 @@
 
     undoBtn.disabled = undoStack.length === 0 || finished;
     clearBtn.disabled = finished;
+    updateHintBtn();
   };
 
   // ---- interaction -----------------------------------------------------
@@ -438,12 +441,58 @@
     if (entry.length) { pushUndo(entry); refresh(); }
   };
 
+  // ---- hints & divine intervention -------------------------------------
+  // Three hints per puzzle: each seats one correct emblem for +5s.
+  // SOLVE reveals the whole arrangement — the run ends with no score.
+  const hintBtn = $('hint-btn');
+  const solveBtn = $('solve-btn');
+
+  const updateHintBtn = () => {
+    hintBtn.textContent = 'HINT (' + hintsLeft + ')';
+    hintBtn.disabled = !started || finished || hintsLeft === 0;
+    solveBtn.disabled = !started || finished;
+  };
+
+  const useHint = () => {
+    if (!started || finished || hintsLeft === 0) return;
+    const cands = [];
+    for (let r = 0; r < SIZE; r++)
+      for (let c = 0; c < SIZE; c++)
+        if (puzzle.givens[r][c] === 0 && grid[r][c] !== puzzle.solution[r][c])
+          cands.push([r, c]);
+    if (!cands.length) return;
+    const pick = cands[Math.floor(Math.random() * cands.length)];
+    pushUndo([[pick[0], pick[1], grid[pick[0]][pick[1]]]]);
+    grid[pick[0]][pick[1]] = puzzle.solution[pick[0]][pick[1]];
+    hintsLeft--;
+    startTime -= 5000; // +5s penalty: elapsed = now - startTime
+    tick();
+    refresh();
+    checkWin();
+    if (!finished && !statusEl.textContent) {
+      statusEl.textContent = 'THE ORACLE SEATS ONE GOD · +5s';
+      statusEl.classList.remove('bad');
+    }
+  };
+
+  const surrender = () => {
+    if (!started || finished) return;
+    surrendered = true;
+    for (let r = 0; r < SIZE; r++)
+      for (let c = 0; c < SIZE; c++)
+        grid[r][c] = puzzle.solution[r][c];
+    refresh();
+    win();
+  };
+
   // ---- runs & winning -----------------------------------------------
   const newRun = () => {
     puzzle = Logic.generate();
     grid = Logic.cloneGrid(puzzle.givens);
     undoStack = [];
     finished = false;
+    surrendered = false;
+    hintsLeft = 3;
     buildBoard();
     refresh();
     $('end-overlay').hidden = true;
@@ -472,9 +521,10 @@
       Math.round(((performance.now() - startTime) / 1000) * 10) / 10);
     $('end-time').textContent = fmtPrecise(secs);
     let res = null;
-    if (window.Arena) res = Arena.submitScore(GAME_ID, secs); // once per run
-    $('end-verdict').textContent =
-      res && res.rank === 1 ? 'YOU SIT ATOP OLYMPUS' : 'THE PANTHEON IS SEALED';
+    if (!surrendered && window.Arena) res = Arena.submitScore(GAME_ID, secs); // once per run
+    $('end-verdict').textContent = surrendered
+      ? 'THE GODS INTERVENED — NO SCORE'
+      : (res && res.rank === 1 ? 'YOU SIT ATOP OLYMPUS' : 'THE PANTHEON IS SEALED');
     $('pb-tag').hidden = !(res && res.improved);
     if (window.Arena) Arena.renderBoard($('standings'), GAME_ID);
     refreshBest();
@@ -487,6 +537,7 @@
     document.body.classList.remove('prestart');
     started = true;
     startTimer();
+    updateHintBtn();
   };
 
   // ---- keyboard -------------------------------------------------------
@@ -513,6 +564,7 @@
       case 'ArrowRight': e.preventDefault(); moveFocus(0, 1); break;
       case 'u': case 'U': undo(); break;
       case 'c': case 'C': clearBoard(); break;
+      case 'h': case 'H': useHint(); break;
       case 'n': case 'N': if (!$('end-overlay').hidden) break; newRun(); break;
     }
   });
@@ -522,6 +574,8 @@
   $('restart-btn').addEventListener('click', newRun);
   undoBtn.addEventListener('click', undo);
   clearBtn.addEventListener('click', clearBoard);
+  hintBtn.addEventListener('click', useHint);
+  solveBtn.addEventListener('click', surrender); // button only — no hotkey, too costly to fat-finger
   newBtn.addEventListener('click', () => { if (started && !finished) newRun(); });
 
   // Veil the generated board until START so nobody pre-studies the

@@ -157,6 +157,8 @@ body::after {
   font-variant-numeric: tabular-nums;
 }
 .hud-best { font-size: 0.95rem; color: var(--accent); }
+.hud-of { color: var(--fg-dim); font-weight: 400; padding: 0 0.08em; }
+#total { color: var(--fg-muted); font-weight: 500; }
 
 .hud-actions {
   display: flex;
@@ -191,6 +193,7 @@ body::after {
   padding: 1rem;
   position: relative;
   z-index: 2;
+  /* Flying arrows are clipped here — never spawn page scrollbars */
   overflow: hidden;
 }
 
@@ -200,71 +203,99 @@ body::after {
   height: var(--board);
 }
 
-/* Board stays hidden until START — no pre-studying the puzzle */
+/* Board stays hidden until START — no pre-scanning on an idle clock */
 body.prestart .board-wrap { visibility: hidden; }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  gap: 1px;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 4px;
   width: 100%;
   height: 100%;
-  background: var(--border);
+  padding: 5px;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
   border-radius: 8px;
-  overflow: hidden;
+  /* overflow stays visible so loosed arrows can fly past the frame */
 }
 
 .cell {
-  background: var(--bg-card);
-  border: none;
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
   padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.12s ease;
+  cursor: default;
   -webkit-tap-highlight-color: transparent;
 }
-.cell svg { width: 60%; height: 60%; display: block; }
-.cell.sun { color: var(--amber); }
-.cell.moon { color: var(--blue); }
-.cell:not(.given):hover { background: #1a212d; }
-.cell:not(.given):active { background: #202836; }
+
+/* an arrow at rest: a raised card */
+.cell.arrow {
+  background: var(--bg-card);
+  border-color: var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.cell.arrow:hover { border-color: var(--accent-dim); background: #17202c; }
+.cell.arrow:hover .glyph svg,
+.cell.arrow:focus-visible .glyph svg {
+  filter: drop-shadow(0 0 6px var(--accent-glow)) drop-shadow(0 0 2px var(--accent-glow));
+}
+
+/* an emptied cell: a near-invisible recess */
+.cell.empty {
+  background: rgba(255, 255, 255, 0.015);
+  border-color: rgba(31, 38, 48, 0.45);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
 .cell:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
-  position: relative;
   z-index: 2;
 }
-.cell.given {
-  background: var(--bg-elevated);
-  cursor: default;
-}
-.cell.given svg { opacity: 0.55; }
 
-/* constraint glyphs on shared edges */
-.cons {
+/* the arrow glyph itself */
+.glyph {
   position: absolute;
   inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  will-change: transform, opacity;
+}
+.glyph svg { width: 62%; height: 62%; display: block; }
+.glyph.dir-r svg { transform: rotate(90deg); }
+.glyph.dir-d svg { transform: rotate(180deg); }
+.glyph.dir-l svg { transform: rotate(270deg); }
+
+/* loosed: fly off in the pointed direction, above neighbours,
+   never catching taps on the way out */
+.glyph.fly {
+  animation: flyoff 0.18s cubic-bezier(0.5, 0, 1, 1) forwards;
+  z-index: 6;
   pointer-events: none;
-  z-index: 3;
 }
-.con {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-family: var(--font-mono);
-  font-size: clamp(0.62rem, calc(var(--board) / 30), 0.85rem);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--fg-muted);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: 3px;
-  padding: 0.14em 0.3em;
-  transition: color 0.15s ease, border-color 0.15s ease;
+@keyframes flyoff {
+  to {
+    transform: translate(var(--fx, 0%), var(--fy, 0%));
+    opacity: 0;
+  }
 }
+
+/* blocked: a short shove toward the direction, then back */
+.glyph.bump { animation: bump 0.18s ease-out; }
+@keyframes bump {
+  0%   { transform: none; }
+  35%  { transform: translate(var(--bx, 0%), var(--by, 0%)); }
+  100% { transform: none; }
+}
+
+/* blocked-shot tint: the shooter and its blocker flush red */
+.cell.deny { background: var(--red-glow); border-color: var(--red); }
+.cell.deny .glyph { color: var(--red); }
 
 /* status line */
 .status {
@@ -466,6 +497,8 @@ body.prestart .board-wrap { visibility: hidden; }
   .hud-best { font-size: 0.85rem; }
   .hud-btn { padding: 0.45rem 0.55rem; font-size: 0.62rem; }
 
+  .board { gap: 3px; padding: 4px; }
+
   .overlay-inner { padding: 1.75rem 1.25rem; }
   .rules li { font-size: 0.8rem; }
   .keys { gap: 0.75rem; }
@@ -473,4 +506,6 @@ body.prestart .board-wrap { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
+  /* with the fly animation disabled, hide loosed glyphs outright */
+  .glyph.fly { opacity: 0; }
 }

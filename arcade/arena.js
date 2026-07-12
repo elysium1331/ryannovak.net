@@ -40,7 +40,8 @@
     labyrinth: { name: 'LABYRINTH', dir: 'asc',  kind: 'time',   immortals: [30, 300] },
     echo:      { name: 'ECHO',      dir: 'desc', kind: 'rounds', immortals: [4, 15]  },
     pantheon:  { name: 'PANTHEON',  dir: 'asc',  kind: 'time',   immortals: [55, 380] },
-    mosaic:    { name: 'MOSAIC',    dir: 'asc',  kind: 'time',   immortals: [70, 430] }
+    mosaic:    { name: 'MOSAIC',    dir: 'asc',  kind: 'time',   immortals: [70, 430] },
+    quiver:    { name: 'QUIVER',    dir: 'asc',  kind: 'time',   immortals: [35, 280] }
   };
 
   const IMMORTALS = [

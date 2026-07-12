@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Pantheon — Ryan Novak</title>
-  <meta name="description" content="A picture sudoku with six divine emblems. Every row, column, and house seats all six gods. One solution. Beat the clock.">
+  <title>Quiver — Ryan Novak</title>
+  <meta name="description" content="A tap-away arrow puzzle. Loose every arrow off a 7×7 field — a shot only flies when its path is clear. Beat the clock.">
 
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="alternate icon" href="/img/favicon.ico">
@@ -22,7 +22,7 @@
   <!-- Nav / chrome -->
   <header class="topbar">
     <a href="/arcade/" class="back">← Back</a>
-    <span class="title">PANTHEON <span class="sub">// SIX_SACRED_SEALS</span></span>
+    <span class="title">QUIVER <span class="sub">// LOOSE_EVERY_ARROW</span></span>
     <span data-arena-chip></span>
   </header>
 
@@ -37,45 +37,40 @@
         <span class="hud-label">BEST</span>
         <span class="hud-value hud-best" id="best">—</span>
       </div>
+      <div class="hud-stat">
+        <span class="hud-label">ARROWS</span>
+        <span class="hud-value"><span id="left">0</span><span class="hud-of">/</span><span id="total">0</span></span>
+      </div>
     </div>
     <div class="hud-actions">
-      <button class="hud-btn" id="hint-btn" aria-label="Hint: seat one correct emblem, costs 5 seconds" disabled>HINT (3)</button>
-      <button class="hud-btn" id="solve-btn" aria-label="Reveal the full solution — ends the run with no score" disabled>SOLVE</button>
-      <button class="hud-btn" id="undo-btn" aria-label="Undo last move">UNDO</button>
-      <button class="hud-btn" id="clear-btn" aria-label="Clear all your entries">CLEAR</button>
       <button class="hud-btn" id="new-btn" aria-label="Generate a new puzzle">NEW PUZZLE</button>
     </div>
   </section>
 
-  <!-- Board + tray -->
+  <!-- Board -->
   <main class="stage">
     <div class="board-wrap">
-      <div class="board" id="board" role="group"
-           aria-label="Pantheon puzzle, 6 by 6 grid. Select an emblem in the tray, then tap a cell to place it."></div>
+      <div class="board" id="board" role="group" aria-label="Quiver puzzle, 7 by 7 grid. Tap an arrow to loose it in the direction it points."></div>
     </div>
-    <div class="tray" id="tray" role="toolbar" aria-label="Emblem tray"></div>
     <p class="status" id="status" role="status" aria-live="polite"></p>
   </main>
 
   <!-- Start overlay -->
   <div class="overlay" id="start-overlay">
     <div class="overlay-inner">
-      <p class="eyebrow">GAME_07 // PANTHEON</p>
-      <h1>Seat the six gods.</h1>
-      <p class="lede">A picture sudoku for the divine. Six emblems, thirty-six cells, exactly one arrangement that satisfies everyone. The clock is your score — lower sits higher on Olympus.</p>
+      <p class="eyebrow">GAME_09 // QUIVER</p>
+      <h1>Empty the quiver.</h1>
+      <p class="lede">A 7×7 field bristling with arrows, each aimed at a far edge. Tap one to loose it. Clear them all — the clock is your score, and lower sits higher on Olympus.</p>
 
       <ul class="rules">
-        <li><span class="rule-mark">6×6</span> Every row and every column seats all six emblems — each god exactly once.</li>
-        <li><span class="rule-mark">2×3</span> Every bold-bordered house of six cells does the same.</li>
-        <li><span class="rule-mark">TRAY</span> Pick an emblem below the board, then tap a cell. Tap a cell holding that emblem to lift it. Dimmed seals are already fully seated.</li>
-        <li><span class="rule-mark">+5s</span> Three hints per puzzle — each seats one correct emblem for five seconds. SOLVE reveals everything, but the gods keep the glory: no score.</li>
+        <li><span class="rule-mark">→</span> Every arrow points at one edge. Tap it and it flies clean off the board — if nothing stands in its way.</li>
+        <li><span class="rule-mark">→|</span> Another arrow anywhere on the flight path blocks the shot. It bumps, it stays. No penalty, no progress.</li>
+        <li><span class="rule-mark">0/46</span> Loose every arrow to win. The field never dead-ends — a clear shot always exists. Spot it faster.</li>
       </ul>
 
       <div class="keys">
-        <div class="key-group"><span class="kbd">1–6</span> EMBLEM</div>
-        <div class="key-group"><span class="kbd">E</span> ERASE</div>
-        <div class="key-group"><span class="kbd">H</span> HINT</div>
-        <div class="key-group"><span class="kbd">U</span> UNDO</div>
+        <div class="key-group"><span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">←</span><span class="kbd">→</span> MOVE</div>
+        <div class="key-group"><span class="kbd">↵</span> LOOSE</div>
         <div class="key-group"><span class="kbd">N</span> NEW PUZZLE</div>
       </div>
 
@@ -89,8 +84,8 @@
   <!-- End overlay -->
   <div class="overlay" id="end-overlay" hidden>
     <div class="overlay-inner">
-      <p class="eyebrow" id="end-verdict">THE PANTHEON IS SEALED</p>
-      <h1>Sealed in <span class="accent" id="end-time">0:00.0</span></h1>
+      <p class="eyebrow" id="end-verdict">QUIVER EMPTIED</p>
+      <h1>Cleared in <span class="accent" id="end-time">0:00.0</span></h1>
       <p class="pb-tag" id="pb-tag" hidden>NEW PERSONAL BEST</p>
       <div id="standings"></div>
       <div class="overlay-cta">
