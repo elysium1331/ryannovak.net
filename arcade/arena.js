@@ -38,7 +38,9 @@
     eclipse:   { name: 'ECLIPSE',   dir: 'asc',  kind: 'time',   immortals: [48, 360] },
     olympus:   { name: 'OLYMPUS',   dir: 'asc',  kind: 'time',   immortals: [65, 420] },
     labyrinth: { name: 'LABYRINTH', dir: 'asc',  kind: 'time',   immortals: [30, 300] },
-    echo:      { name: 'ECHO',      dir: 'desc', kind: 'rounds', immortals: [4, 15]  }
+    echo:      { name: 'ECHO',      dir: 'desc', kind: 'rounds', immortals: [4, 15]  },
+    pantheon:  { name: 'PANTHEON',  dir: 'asc',  kind: 'time',   immortals: [55, 380] },
+    mosaic:    { name: 'MOSAIC',    dir: 'asc',  kind: 'time',   immortals: [70, 430] }
   };
 
   const IMMORTALS = [

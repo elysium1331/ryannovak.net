@@ -1,6 +1,6 @@
 # ryannovak.net
 
-Personal site for Ryan Novak. Single-page CV, plus a `/bored/` page with two small games and an `/arcade/` page with four more — quick casual puzzles with monthly "Mount Olympus" standings.
+Personal site for Ryan Novak. Single-page CV, plus a `/bored/` page with two small games and an `/arcade/` page with six more — quick casual puzzles with monthly "Mount Olympus" standings.
 
 ## Stack
 
@@ -23,7 +23,9 @@ Static HTML, CSS, and vanilla JS. No framework, no build step, no dependencies. 
 │   ├── eclipse/                # Tango-style sun/moon logic grid
 │   ├── olympus/                # Queens-style thunderbolt placement puzzle
 │   ├── labyrinth/              # Zip-style draw-the-path puzzle
-│   └── echo/                   # Simon-style memory game
+│   ├── echo/                   # Simon-style memory game
+│   ├── pantheon/               # Picture sudoku — six divine emblems, 6×6
+│   └── mosaic/                 # Nonogram / picross — restore the temple floor
 │       └── (each: index.html, style.css, game.js)
 ├── css/
 │   └── main.css                # Shared styles, design tokens, reset, layout
@@ -62,6 +64,10 @@ Static HTML, CSS, and vanilla JS. No framework, no build step, no dependencies. 
 **Labyrinth** — Zip-style path drawing. Drag Ariadne's thread from waypoint 1 to 7, in order, covering every cell exactly once. Score is solve time.
 
 **Echo** — Simon-style memory. Four toned tiles, a sequence that grows each round, one mistake ends the run. Score is rounds completed.
+
+**Pantheon** — Picture sudoku (Meowdoku-style, but with divine emblems instead of cats). 6×6 grid, six 2×3 houses; place Zeus's bolt, Poseidon's trident, Athena's owl, Apollo's lyre, Ares's helm, and Dionysus's grapes so each appears once per row, column, and house. Unique-solution puzzles. Score is solve time.
+
+**Mosaic** — Nonogram/picross. 8×8 temple floor; edge clues give the run-lengths of tesserae in each row and column. Every generated board is solvable by pure line logic — no guessing. Score is solve time.
 
 ## The Arena (anonymous standings)
 
